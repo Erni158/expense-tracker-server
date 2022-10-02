@@ -1,0 +1,4 @@
+{
+  "appService.defaultWebAppToDeploy": "/subscriptions/9b27854f-20c7-4bb6-80e3-04f02ba33227/AppServices/subscriptions/9b27854f-20c7-4bb6-80e3-04f02ba33227/resourceGroups/expense-tracker-app/providers/Microsoft.Web/sites/expense-tracker-app-api",
+  "appService.deploySubpath": "."
+}

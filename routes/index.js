@@ -3,6 +3,7 @@ const { registerUser, authUser, tokenCheck, profile } = require("../controllers/
 const { getBills, postBill, deleteBill } = require("../services/bill-service");
 const { getCategories, postCategory } = require("../controllers/categoriesControllers");
 const protect = require("../middlewares/authMiddleware");
+const { postReceipt, getReceipts } = require("../controllers/ReceiptControllers");
 const router = express.Router();
 
 router.get("/bills", protect, async (req, res) => {
@@ -15,6 +16,14 @@ router.post("/bill", protect, async (req, res) => {
 
 router.post("/bill/delete", protect, async (req, res) => {
   deleteBill(req, res);
+})
+
+router.post("/receipt", protect, async (req, res) => {
+  postReceipt(req, res);
+})
+
+router.get("/receipts", protect, async (req, res) => {
+  getReceipts(req, res);
 })
 
 router.get("/categories", protect, async (req, res) => {

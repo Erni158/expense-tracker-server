@@ -1,27 +1,54 @@
 const Bill = require("../models/bill.model");
+const Receipt = require("../models/receipt.model");
 const checkServerError = require("../utils/checkServerError");
 
 require("../mongo").connect();
 
 function getBills(req, res) {
-  const { start, end } = req.query;
+  const { start, end, isReceipts } = req.query;
 
-  const docquery = Bill.find({ 
-    user: req.user,
-    ...(start && end) && { createdAt: { 
-      $gte: new Date(start), 
-      $lt: new Date(end) 
-    }}
-  }).populate("user");
+  if (isReceipts) {
+    const docqueryReceipt = Receipt.find({ 
+      user: req.user,
+      ...(start && end) && { createdAt: { 
+        $gte: new Date(start), 
+        $lt: new Date(end) 
+      }}
+    }).populate("user");
 
-  docquery
-    .exec()
-    .then(bills => {
-      res.json(bills);
+    docqueryReceipt.exec().then(receipts => {
+      Bill.find({ 
+        user: req.user,
+        ...(start && end) && { createdAt: { 
+          $gte: new Date(start), 
+          $lt: new Date(end) 
+        }}
+      })
+      .populate("user")
+      .exec()
+      .then(bills => {
+        const merged = bills.concat(receipts);
+        res.json(merged);
+      })
     })
-    .catch(err => {
-      res.status(500).send(err);
-    });
+  } else {
+    const docquery = Bill.find({ 
+      user: req.user,
+      ...(start && end) && { createdAt: { 
+        $gte: new Date(start), 
+        $lt: new Date(end) 
+      }}
+    }).populate("user");
+  
+    docquery
+      .exec()
+      .then(bills => {
+        res.json(bills);
+      })
+      .catch(err => {
+        res.status(500).send(err);
+      });
+  }
 }
 
 async function postBill(req, res) {

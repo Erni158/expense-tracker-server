@@ -33,8 +33,23 @@ const postReceipt = asyncHandler(async (req, res) => {
   })
   receipt.save(error => {
     if (checkServerError(res, error)) return;
-    res.status(201).json(receipt);
+    res.status(200).json(receipt);
   })
 });
 
-module.exports = { getReceipts, postReceipt };
+const deleteReceipt = asyncHandler(async (req, res) => {
+  const { selected } = req.body;
+  
+  for (const id of selected) {
+    Receipt.deleteOne({ _id: id })
+    .catch(err => {
+      res.status(500).send(err);
+    });
+  }
+
+  res.json({
+    status: "OK"
+  })
+});
+
+module.exports = { getReceipts, postReceipt, deleteReceipt };

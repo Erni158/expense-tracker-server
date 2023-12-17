@@ -24,6 +24,19 @@ const postCategory = asyncHandler(async (req, res) => {
     if (checkServerError(res, error)) return;
     res.status(201).json(category);
   })
-})
+});
 
-module.exports = { getCategories, postCategory };
+const deleteCategory = asyncHandler(async (req, res) => {
+  const { id } = req.body;
+
+  Categories.deleteOne({ _id: id })
+  .catch(err => {
+    res.status(500).send(err);
+  });
+
+  res.json({
+    status: "OK"
+  })
+});
+
+module.exports = { getCategories, postCategory, deleteCategory };
